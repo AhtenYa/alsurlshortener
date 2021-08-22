@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block stylelink %}
+{% load static %}
+<!--<link type="text/css" rel="stylesheet" href="{% static 'muskers/css/style.css' %}"/>-->
+{% endblock %}
+
+{% block content %}
+
+{% if user.is_authenticated %}
+
+	{% if messages %}
+		<ul class="messages">
+			{% for message in messages %}
+			<li>{{ message }}</li>
+			{% endfor %}
+		</ul>
+	{% endif %}
+
+	<form class="col-md-4 mx-auto my-5 py-5" action="{% url 'muskers:delete_user' user.username %}" method="post">
+		{% csrf_token %}
+
+		<input class="my-2 fs-5 form-control border border-primary border-3 rounded-3 btn btn-primary" type="submit" value="Delete">
+
+	</form>
+
+{% endif %}
+
+{% endblock %}

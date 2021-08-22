@@ -1,0 +1,104 @@
+<!DOCTYPE HTML>
+
+<html lang="en">
+
+<head>
+
+	<meta charset="utf-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="keywords" content="als, shortener, url, link, urls, links"/>
+	<meta name="description" content="Save your valiable time by shortening links."/>
+
+	<title>ALS the URL shortener</title>
+
+	{% load static %}
+	<script src="{% static 'js/bootstrap.min.js' %}"></script>
+	<link type="text/css" rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}"/>
+	<!--<link type="text/css" rel="stylesheet" href="{% static 'css/style.css' %}"/>-->
+	{% block stylelink %}{% endblock %}
+
+</head>
+
+<body>
+	<nav class="navbar navbar-expand-lg sticky-top navbar-light bg-light">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="{% url 'shortener:index' %}">ALS</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarScroll" aria-controls="navbarScroll" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarScroll">
+      <ul class="navbar-nav me-auto my-2 my-lg-0 navbar-nav-scroll" style="--bs-scroll-height: 100px;">
+				{% if user.is_authenticated %}
+				<li class="nav-item">
+          <a class="nav-link active" aria-current="page" href="{% url 'muskers:user' %}">MAKE SHORTCUTS</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'muskers:shorts' %}">VIEW SHORTCUTS</a>
+        </li>
+				{% else %}
+        <li class="nav-item">
+          <a class="nav-link active" aria-current="page" href="{% url 'shortener:index' %}">MAIN PAGE</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'shortener:about' %}">ABOUT</a>
+        </li>
+				{% endif %}
+      </ul>
+			{% if user.is_authenticated %}
+      <form class="d-flex" action="{% url 'muskers:settings' %}" method="get">
+				{% csrf_token %}
+        <button class="btn btn-outline-primary" type="submit">SETTINGS</button>
+      </form>
+			<form class="d-flex" action="{% url 'muskers:logout' %}" method="get">
+				{% csrf_token %}
+        <button class="btn btn-primary" type="submit">SIGN OUT</button>
+      </form>
+			{% else %}
+			<form class="d-flex" action="{% url 'muskers:register' %}" method="get">
+				{% csrf_token %}
+        <button class="btn btn-outline-primary" type="submit">SIGN UP</button>
+      </form>
+			<form class="d-flex" action="{% url 'muskers:index' %}" method="get">
+				{% csrf_token %}
+        <button class="btn btn-primary" type="submit">SIGN IN</button>
+      </form>
+			{% endif %}
+    </div>
+  </div>
+</nav>
+
+	<div class="container text-center">
+
+		<main>
+
+			<header>
+
+				{% block myjumbotron %} {% endblock %}
+
+			</header>
+
+			<section>
+
+				{% block content %} {% endblock %}
+
+			</section>
+
+		</main>
+
+		<article>
+
+			{% block marticle %} {% endblock %}
+
+		</article>
+
+		<footer class="py-5">
+			By using our service you accept the <a class="text-decoration-none" href="">Terms of service</a>
+			2021 &copy; All rights reserved!
+		</footer>
+
+	</div>
+
+</body>
+
+</html>

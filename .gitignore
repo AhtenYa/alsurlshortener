@@ -1,0 +1,6 @@
+als_env
+als/__pycache__
+muskers/__pycache__
+muskers/migrations
+shortener/__pycache__
+shortener/migrations

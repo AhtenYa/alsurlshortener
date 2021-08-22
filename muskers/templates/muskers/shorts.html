@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+
+{% block stylelink %}
+{% load static %}
+<!--<link type="text/css" rel="stylesheet" href="{% static 'muskers/css/style.css' %}"/>-->
+{% endblock %}
+
+{% block content %}
+{% if user.is_authenticated %}
+<div class="table-responsive py-5">
+	<table class="table table-borderless text-start">
+		<thead class="">
+			<tr class="">
+
+				<th scope="col" class="">
+					Shortcut
+				</th>
+
+				<th scope="col" class="">
+					Destination
+				</th>
+
+			</tr>
+		</thead>
+		{% for link in page_obj %}
+		<tbody class="">
+			<tr class="">
+
+				<th scope="row" class="">
+					{{ link.shortlink_text|truncatechars:16 }}
+				</th>
+
+				<td class="">
+					{{ link.longlink_text|truncatechars:32 }}
+				</td>
+
+				<td class="">
+					<a class="text-decoration-none" href="{% url 'muskers:details' link.shortlink_text %}">DETAILS</a>
+					<a class="text-decoration-none" href="{% url 'muskers:edit' link.shortlink_text %}">EDIT</a>
+					<a class="text-decoration-none" href="{% url 'muskers:delete' link.shortlink_text %}">DELETE</a>
+				</td>
+
+			</tr>
+		</tbody>
+		{% endfor %}
+	</table>
+</div>
+
+<div class="col-md-4 mx-auto border border-3">
+<div class="pagination">
+    <span class="step-links mx-auto">
+        {% if page_obj.has_previous %}
+            <a href="?page=1">&laquo; first</a>
+            <a href="?page={{ page_obj.previous_page_number }}">previous</a>
+        {% endif %}
+
+        <span class="current">
+            Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+        </span>
+
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}">next</a>
+            <a href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
+        {% endif %}
+    </span>
+</div>
+</div>
+
+{% endif %}
+{% endblock %}

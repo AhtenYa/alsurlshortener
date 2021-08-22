@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block stylelink %}
+{% load static %}
+<script src="{% static 'muskers/js/chart.min.js' %}"></script>
+<link type="text/css" rel="stylesheet" href="{% static 'muskers/css/chart.min.css' %}"/>
+{% endblock %}
+
+{% block content %}
+<div class="py-5">
+<canvas id="myChart" width="400" height="200"></canvas>
+<script >
+var ctx = document.getElementById('myChart').getContext('2d');
+var myChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+        labels: [{% for item in qs %}'{{ item.creation_day }}',{% endfor %}],
+        datasets: [{
+            label: 'Redirections',
+            data: [{% for item in qs %}{{ item.redirections }},{% endfor %}],
+            backgroundColor: 'rgba(0, 81, 255, 0.2)',
+            borderColor: 'rgba(0, 81, 255, 1)',
+            borderWidth: 1
+        }]
+    },
+    options: {
+        scales: {
+            y: {
+                beginAtZero: true
+            }
+        }
+    }
+});
+</script>
+</div>
+{% endblock %}

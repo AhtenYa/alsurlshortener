@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block stylelink %}
+{% load static %}
+<!--<link type="text/css" rel="stylesheet" href="{% static 'muskers/css/style.css' %}"/>-->
+{% endblock %}
+
+{% block content %}
+
+	{% if messages %}
+		<ul class="messages">
+			{% for message in messages %}
+			<li>{{ message }}</li>
+			{% endfor %}
+		</ul>
+	{% endif %}
+
+	<div class="account_info">
+		<table>
+			<tr>
+				<th>Shortcut Statistics</th>
+			</tr>
+			{% if chart %}
+				<tr>
+					<img src="data:image/png;base64, {{chart|safe}}">
+				</tr>
+			{% endif %}
+			{% for stat in culinkStats %}
+			<tbody>
+				<tr>
+					<td>{{ stat.creation_day }}</td>
+					<td>{{ stat.redirections }}</td>
+				</tr>
+			</tbody>
+			{% endfor %}
+		</table>
+	</div>
+
+{% endif %}
+{% endblock %}

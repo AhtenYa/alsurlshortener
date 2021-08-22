@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block stylelink %}
+{% load static %}
+<!--<link type="text/css" rel="stylesheet" href="{% static 'muskers/css/style.css' %}"/>-->
+{% endblock %}
+
+{% block content %}
+<form class="col-md-4 mx-auto my-5 py-5" action="{% url 'muskers:register' %}" method="post">
+	{% csrf_token %}
+	{{ form }}
+
+	<input class="my-2 fs-5 form-control border border-primary border-3 rounded-3 btn btn-primary" type="submit" value="Register"/>
+	<input type="hidden" name="next" value="{% url 'muskers:user' %}"/>
+
+</form>
+{% endblock %}

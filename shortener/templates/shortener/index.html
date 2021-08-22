@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% block stylelink %}
+{% load static %}
+<!--<link type="text/css" rel="stylesheet" href="{% static 'shortener/css/mystyle.css' %}"/>-->
+{% endblock %}
+
+{% block myjumbotron%}
+<div class="col-md-10 py-5 mx-auto">
+	<div class="p-4 bg-light border border-3 rounded-3">
+		<h1 class="col-md-12 fs-1 fw-bold mx-auto">ALS the URL shortener</h1>
+		<p class="col-md-12 fs-5 mx-auto">
+			Give us any link bellow and we will give You a random shortcut in return.
+		</p>
+		<p class="col-md-12 fs-5 mx-auto">
+			<a class="text-decoration-none" href="{% url 'muskers:register' %}">Sign up</a> and create custom shortcuts for Your links.
+		</p>
+	</div>
+</div>
+{% endblock %}
+
+{% block content %}
+
+<form class="d-flex col-md-10 mx-auto" action="{% url 'shortener:index' %}" method="post">
+	{% csrf_token %}
+	{{ form }}
+	<button class="btn btn-primary" type="submit">SHORTEN</button>
+</form>
+
+{% if messages %}
+	<ul class="messages">
+		{% for message in messages %}
+			<li>{{ message }}</li>
+		{% endfor %}
+	</ul>
+{% endif %}
+
+{% endblock %}
+
+{% block marticle %}
+	<div class="col-md-10 py-5 mx-auto text-start">
+		<div class="p-5 bg-light border border-3 rounded-3">
+			<h4 class="col-md-12 fs-3 fw-bold"><a class="text-decoration-none" href="{% url 'muskers:register' %}">Sign up</a> and break the limits!</h4>
+			<p class="col-md-12 fs-5">
+				You can use our service for free without an account but there are 2 limitations which you may want to break.
+				The shortened links are 6 randomly generated characters that may be hard to remember and they expire in 14 days.
+				After that time you need to shorten it again.
+			</p>
+			<p class="col-md-12 fs-5">
+				<a class="text-decoration-none" href="{% url 'muskers:register' %}">Sign up</a>!
+			</p>
+			<p class="col-md-12 fs-5">
+				With an account you can create custom links that are valid as long as your account exists.
+				Sign up now and use the service we provide without limitations!
+			</p>
+		</div>
+	</div>
+{% endblock %}
