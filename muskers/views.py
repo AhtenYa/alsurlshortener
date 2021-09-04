@@ -10,6 +10,10 @@ from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.utils.decorators import method_decorator
 
+from django.contrib.auth.mixins import PermissionRequiredMixin
+from django.contrib.auth.models import Permission
+from django.contrib.contenttypes.models import ContentType
+
 from django.contrib.auth.models import User
 
 from .models import Culink, CulinkStats
@@ -40,11 +44,21 @@ class CreateCulinkView(FormView):
 
         self.shorten_by_user(tuser, longl, shortl)
 
+        content_type = ContentType.objects.get_for_model(Culink)
+        permission = Permission.objects.get(
+        codename='change_culink',
+        content_type=content_type,
+        )
+        
+        if not user.has_perm('muskers.change_culink'):
+            tuser.user_permissions.add(permission)
+
         return super().form_valid(form)
 
 
 @method_decorator(login_required, name='dispatch')
-class CulinkUpdateView(UpdateView):
+class CulinkUpdateView(PermissionRequiredMixin, UpdateView):
+    permission_required = 'muskers.change_culink'
     template_name = 'muskers/edit.html'
     model = Culink
     form_class = CulinkForm
