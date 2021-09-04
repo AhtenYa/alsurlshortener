@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Culink, CulinkStats
+from .models import Culink, CulinkStat
 
 
 class CulinkAdmin(admin.ModelAdmin):
@@ -16,7 +16,7 @@ class CulinkAdmin(admin.ModelAdmin):
     search_fields = ['longlink_text']
 
 
-class CulinkStatsAdmin(admin.ModelAdmin):
+class CulinkStatAdmin(admin.ModelAdmin):
     fieldsets = [
         (None, {'fields': ['culink']}),
         (None, {'fields': ['redirections']}),
@@ -28,4 +28,4 @@ class CulinkStatsAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Culink, CulinkAdmin)
-admin.site.register(CulinkStats, CulinkStatsAdmin)
+admin.site.register(CulinkStat, CulinkStatAdmin)

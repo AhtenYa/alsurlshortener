@@ -13,7 +13,7 @@ from django.contrib import messages
 from django.forms import URLField
 from django.core.exceptions import ValidationError
 
-from muskers.models import Culink, CulinkStats
+from muskers.models import Culink, CulinkStat
 from muskers.forms import CulinkOneForm, CulinkCheckOneForm
 
 
@@ -56,10 +56,8 @@ class AboutView(DetailView):
 
 
 def add_stats(culink):
-    try:
-        culinkStats = CulinkStats.objects.get(culink=culink, creation_day=datetime.date.today())
-    except CulinkStats.DoesNotExist:
-        culinkStats = CulinkStats.objects.create(culink=culink)
+    culinkStats, created = CulinkStat.objects.get_or_create(culink=culink,
+    creation_day=datetime.date.today(), defaults={'redirections': int(0)})
 
     culinkStats.redirections += 1
     culinkStats.save()

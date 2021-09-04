@@ -14,10 +14,10 @@ class Culink(models.Model):
         return reverse('muskers:shorts')
 
 
-class CulinkStats(models.Model):
+class CulinkStat(models.Model):
     culink = models.ForeignKey(Culink, on_delete=models.CASCADE)
-    creation_day = models.DateField('creation day', auto_now_add=True)
-    redirections = models.IntegerField(null=False, blank=True, default=0)
+    creation_day = models.DateField('creation day', auto_now_add=True, unique=True)
+    redirections = models.IntegerField(blank=True, default=0)
 
     def __str__(self):
-        return "{}-{}".format(self.creation_day, self.redirections)
+        return f"{self.creation_day}-{self.redirections}"

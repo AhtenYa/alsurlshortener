@@ -16,7 +16,7 @@ from django.contrib.contenttypes.models import ContentType
 
 from django.contrib.auth.models import User
 
-from .models import Culink, CulinkStats
+from .models import Culink, CulinkStat
 from .forms import CulinkForm, LoginForm, RegisterForm, PasswordForm
 
 
@@ -97,7 +97,7 @@ class CulinkDetailsView(DetailView):
 
     def get(self, request, slug):
         culink = get_object_or_404(Culink, shortlink_text=slug, owner=request.user)
-        culinkStats = CulinkStats.objects.filter(culink=culink)
+        culinkStats = CulinkStat.objects.filter(culink=culink)
         context = {'culink': culink, 'qs': culinkStats}
 
         return render(request, 'muskers/charts.html', context)
@@ -122,7 +122,7 @@ class UserCreateView(CreateView):
         user_perms = Permission.objects.filter(content_type=user_content_type)
         culink_content_type = ContentType.objects.get_for_model(Culink)
         culink_perms = Permission.objects.filter(content_type=culink_content_type)
-        view_culinkstats_perm = Permission.objects.get(codename='view_culinkstats')
+        view_culinkstat_perm = Permission.objects.get(codename='view_culinkstat')
         add_user_perm = Permission.objects.get(codename='add_user')
 
         for perm in user_perms:
@@ -130,7 +130,7 @@ class UserCreateView(CreateView):
         for perm in culink_perms:
             user.user_permissions.add(perm)
 
-        user.user_permissions.add(view_culinkstats_perm)
+        user.user_permissions.add(view_culinkstat_perm)
         user.user_permissions.remove(add_user_perm)
 
         if not self.success_url:
