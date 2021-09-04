@@ -105,7 +105,7 @@ class ResultsView(PermissionRequiredMixin, ListView):
 
 @method_decorator(login_required, name='dispatch')
 class CulinkDetailsView(PermissionRequiredMixin, DetailView):
-    permission_required = 'muskers.view_culink'
+    permission_required = 'muskers.view_culinkstat'
     template_name = 'muskers/charts.html'
     model = Culink
     slug_field = "shortlink_text"
@@ -146,6 +146,7 @@ class UserCreateView(CreateView):
         user_perms = Permission.objects.filter(content_type=user_content_type)
         culink_content_type = ContentType.objects.get_for_model(Culink)
         culink_perms = Permission.objects.filter(content_type=culink_content_type)
+
         view_culinkstat_perm = Permission.objects.get(codename='view_culinkstat')
         add_user_perm = Permission.objects.get(codename='add_user')
 
@@ -154,8 +155,8 @@ class UserCreateView(CreateView):
         for perm in culink_perms:
             user.user_permissions.add(perm)
 
-        user.user_permissions.add(view_culinkstat_perm)
         user.user_permissions.remove(add_user_perm)
+        user.user_permissions.add(view_culinkstat_perm)
 
         if not self.success_url:
             raise ImproperlyConfigured("No URL to redirect to. Provide a success_url.")
@@ -188,9 +189,7 @@ class UserDeleteView(PermissionRequiredMixin, DeleteView):
     slug_field = "username"
 
     def has_permission(self):
-        user_obj = self.get_object()
-
-        if self.request.user == user_obj:
+        if self.request.user == self.get_object():
             perms = self.get_permission_required()
             return self.request.user.has_perms(perms)
         else:
