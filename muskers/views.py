@@ -28,7 +28,8 @@ class IndexView(LoginView):
 
 
 @method_decorator(login_required, name='dispatch')
-class CreateCulinkView(FormView):
+class CreateCulinkView(PermissionRequiredMixin, FormView):
+    permission_required = 'muskers.add_culink'
     template_name = 'muskers/user.html'
     form_class = CulinkForm
     success_url = 'shorts/'
@@ -66,15 +67,26 @@ class CulinkUpdateView(PermissionRequiredMixin, UpdateView):
 
 
 @method_decorator(login_required, name='dispatch')
-class CulinkDeleteView(DeleteView):
+class CulinkDeleteView(PermissionRequiredMixin, DeleteView):
+    permission_required = 'muskers.delete_culink'
     template_name = 'muskers/delete.html'
     model = Culink
     success_url = reverse_lazy('muskers:shorts')
     slug_field = "shortlink_text"
 
+    def has_permission(self):
+        culink_obj = self.get_object()
+
+        if self.request.user == culink_obj.owner:
+            perms = self.get_permission_required()
+            return self.request.user.has_perms(perms)
+        else:
+            return False
+
 
 @method_decorator(login_required, name='dispatch')
-class ResultsView(ListView):
+class ResultsView(PermissionRequiredMixin, ListView):
+    permission_required = 'muskers.view_culink'
     template_name = 'muskers/shorts.html'
     model = Culink
 
@@ -92,8 +104,20 @@ class ResultsView(ListView):
 
 
 @method_decorator(login_required, name='dispatch')
-class CulinkDetailsView(DetailView):
+class CulinkDetailsView(PermissionRequiredMixin, DetailView):
+    permission_required = 'muskers.view_culink'
     template_name = 'muskers/charts.html'
+    model = Culink
+    slug_field = "shortlink_text"
+
+    def has_permission(self):
+        culink_obj = self.get_object()
+
+        if self.request.user == culink_obj.owner:
+            perms = self.get_permission_required()
+            return self.request.user.has_perms(perms)
+        else:
+            return False
 
     def get(self, request, slug):
         culink = get_object_or_404(Culink, shortlink_text=slug, owner=request.user)
@@ -139,7 +163,8 @@ class UserCreateView(CreateView):
 
 
 @method_decorator(login_required, name='dispatch')
-class UserUpdateView(DetailView):
+class UserUpdateView(PermissionRequiredMixin, DetailView):
+    permission_required = 'auth.change_user'
     template_name = 'muskers/settings.html'
 
     def get(self, request):
@@ -147,15 +172,26 @@ class UserUpdateView(DetailView):
 
 
 @method_decorator(login_required, name='dispatch')
-class UserPasswordView(PasswordChangeView):
+class UserPasswordView(PermissionRequiredMixin, PasswordChangeView):
+    permission_required = 'auth.change_user'
     template_name = 'muskers/password.html'
     form_class = PasswordForm
     success_url = reverse_lazy('muskers:settings')
 
 
 @method_decorator(login_required, name='dispatch')
-class UserDeleteView(DeleteView):
+class UserDeleteView(PermissionRequiredMixin, DeleteView):
+    permission_required = 'auth.delete_user'
     template_name = 'muskers/delete_user.html'
     model = User
     success_url = reverse_lazy('muskers:index')
     slug_field = "username"
+
+    def has_permission(self):
+        user_obj = self.get_object()
+
+        if self.request.user == user_obj:
+            perms = self.get_permission_required()
+            return self.request.user.has_perms(perms)
+        else:
+            return False
