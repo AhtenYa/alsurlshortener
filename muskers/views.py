@@ -44,15 +44,6 @@ class CreateCulinkView(FormView):
 
         self.shorten_by_user(tuser, longl, shortl)
 
-        content_type = ContentType.objects.get_for_model(Culink)
-        permission = Permission.objects.get(
-        codename='change_culink',
-        content_type=content_type,
-        )
-        
-        if not user.has_perm('muskers.change_culink'):
-            tuser.user_permissions.add(permission)
-
         return super().form_valid(form)
 
 
@@ -63,6 +54,15 @@ class CulinkUpdateView(PermissionRequiredMixin, UpdateView):
     model = Culink
     form_class = CulinkForm
     slug_field = "shortlink_text"
+
+    def has_permission(self):
+        culink_obj = self.get_object()
+
+        if self.request.user == culink_obj.owner:
+            perms = self.get_permission_required()
+            return self.request.user.has_perms(perms)
+        else:
+            return False
 
 
 @method_decorator(login_required, name='dispatch')
@@ -114,6 +114,28 @@ class UserCreateView(CreateView):
     model = User
     form_class = RegisterForm
     success_url = reverse_lazy('muskers:user')
+
+    def get_success_url(self):
+        user = self.object
+
+        user_content_type = ContentType.objects.get_for_model(User)
+        user_perms = Permission.objects.filter(content_type=user_content_type)
+        culink_content_type = ContentType.objects.get_for_model(Culink)
+        culink_perms = Permission.objects.filter(content_type=culink_content_type)
+        view_culinkstats_perm = Permission.objects.get(codename='view_culinkstats')
+        add_user_perm = Permission.objects.get(codename='add_user')
+
+        for perm in user_perms:
+            user.user_permissions.add(perm)
+        for perm in culink_perms:
+            user.user_permissions.add(perm)
+
+        user.user_permissions.add(view_culinkstats_perm)
+        user.user_permissions.remove(add_user_perm)
+
+        if not self.success_url:
+            raise ImproperlyConfigured("No URL to redirect to. Provide a success_url.")
+        return str(self.success_url)
 
 
 @method_decorator(login_required, name='dispatch')
